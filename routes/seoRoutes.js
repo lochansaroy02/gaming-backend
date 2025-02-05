@@ -3,11 +3,9 @@ const { createSEO, getAllSEO, getSEOById, deleteSEO, editSEO } = require('../con
 
 const router = express.Router();
 
-router.post('/create', createSEO)
-router.get('/get', getAllSEO)
-router.delete('/delete/:id', deleteSEO)
-router.put('/update/:id', editSEO)
-
-
+router.post('/create', createSEO);
+router.get('/get', getAllSEO);
+router.delete('/delete/:id', deleteSEO);
+router.put('/update/:id', editSEO);
 
 module.exports = router;

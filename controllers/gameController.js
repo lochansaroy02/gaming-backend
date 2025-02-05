@@ -15,6 +15,7 @@ const uploadGame = async (req, res) => {
         category,
         developer,
         embedScript,
+        imageFileURL,
         platform,
         emulator,
         popularity,
@@ -45,6 +46,7 @@ const uploadGame = async (req, res) => {
             coreName,
             gameURL,
             imageURL,
+            imageFileURL,
             category,
             developer,
             embedScript,
@@ -93,14 +95,14 @@ const updatePopularity = async (req, res) => {
 
 const updateGame = async (req, res) => {
     const { id } = req.params;
-    const { title, description, coreName, category, developer, embedScript, platform, gameURL, imageURL, emulator, popularity, content } = req.body;
+    const { title, description, coreName, category, developer, embedScript, platform, gameURL, imageURL, imageFileURL, emulator, popularity, content } = req.body;
 
     const gameFile = req.files?.file?.[0];
     const imageFile = req.files?.image?.[0];
 
     try {
 
-        const updateFields = { title, description, coreName, category, developer, embedScript, platform, gameURL, imageURL, emulator, popularity, content };
+        const updateFields = { title, description, coreName, category, developer, embedScript, platform, gameURL, imageURL, imageFileURL, emulator, popularity, content };
 
         if (gameFile) {
             if (gameFile.buffer && gameFile.originalname) {

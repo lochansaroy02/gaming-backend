@@ -10,6 +10,7 @@ const gameSchema = new mongoose.Schema({
     gameURL: { type: String },
     embedScript: { type: String },
     imageURL: { type: String },
+    imageFileURL: { type: String },
     category: { type: String },
     platform: { type: String },
     developer: { type: String },

@@ -1,48 +1,22 @@
-const { SEO } = require('../models/seoModel')
-
-
+const { SEO } = require('../models/seoModel');
 
 const createSEO = async (req, res) => {
-    const { title, description, keywords, page } = req.body;
-
     try {
-        const existingSEO = await SEO.findOne({ page });
-
-        if (existingSEO) {
-            existingSEO.title = title;
-            existingSEO.description = description;
-            existingSEO.keywords = keywords;
-
-            const updatedSEO = await existingSEO.save();
-            return res.status(200).json({ message: 'SEO entry updated successfully', seo: updatedSEO });
-        } else {
-            const newSEO = new SEO({
-                title,
-                description,
-                keywords,
-                page,
-            });
-
-            await newSEO.save();
-            return res.status(201).json({ message: 'SEO entry created successfully', seo: newSEO });
-        }
+        const { title, description, keywords, page } = req.body;
+        const seo = new SEO({ title, description, keywords: keywords || [], page });
+        await seo.save();
+        res.status(201).json({ seo });
     } catch (error) {
-        res.status(500).json({ message: "Error processing SEO entry.", error });
+        res.status(500).json({ error: error.message });
     }
 };
 
-const deleteSEO = async (req, res) => {
+const getAllSEO = async (req, res) => {
     try {
-        const { id } = req.params; // Get the ID from the request parameters
-        const deletedSEO = await SEO.findByIdAndDelete(id);
-
-        if (!deletedSEO) {
-            return res.status(404).json({ message: "SEO entry not found." });
-        }
-
-        res.status(200).json({ message: "SEO entry deleted successfully." });
+        const seo = await SEO.find();
+        res.status(200).json({ seo });
     } catch (error) {
-        res.status(500).json({ message: "Error deleting SEO entry.", error });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -50,59 +24,25 @@ const editSEO = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, description, keywords, page } = req.body;
-
         const updatedSEO = await SEO.findByIdAndUpdate(
             id,
-            { title, description, keywords, page },
-            { new: true, runValidators: true }
+            { title, description, keywords: keywords || [], page },
+            { new: true }
         );
-
-        if (!updatedSEO) {
-            return res.status(404).json({ message: "SEO entry not found." });
-        }
-
-        res.status(200).json({ message: "SEO entry updated successfully.", seo: updatedSEO });
+        res.status(200).json({ seo: updatedSEO });
     } catch (error) {
-        res.status(500).json({ message: "Error updating SEO entry.", error });
+        res.status(500).json({ error: error.message });
     }
 };
 
-
-const getAllSEO = async (req, res) => {
+const deleteSEO = async (req, res) => {
     try {
-        const allSEO = await SEO.find(); // Fetch all SEO entries
-
-        if (allSEO.length === 0) {
-            return res.status(404).json({ message: "No SEO entries found." });
-        }
-
-        res.status(200).json({ seo: allSEO });
+        const { id } = req.params;
+        await SEO.findByIdAndDelete(id);
+        res.status(200).json({ message: 'SEO entry deleted' });
     } catch (error) {
-        res.status(500).json({ message: "Error fetching SEO entries.", error });
+        res.status(500).json({ error: error.message });
     }
 };
 
-const getSEOById = async (req, res) => {
-    try {
-        const { id } = req.params; // Get the ID from the request parameters
-        const singleSEO = await SEO.findById(id);
-
-        if (!singleSEO) {
-            return res.status(404).json({ message: "SEO entry not found." });
-        }
-
-        res.status(200).json({ seo: singleSEO });
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching SEO entry.", error });
-    }
-};
-
-
-
-module.exports = {
-    createSEO,
-    deleteSEO,
-    editSEO,
-    getAllSEO,
-    getSEOById,
-};
+module.exports = { createSEO, getAllSEO, editSEO, deleteSEO };
